@@ -35,14 +35,11 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       clearSessionQueries();
-      login(
-        { accessToken: data.accessToken, refreshToken: data.refreshToken },
-        {
-          email: data.email,
-          fullName: data.fullName,
-          role: data.role,
-        }
-      );
+      login({
+        email: data.email,
+        fullName: data.fullName,
+        role: data.role,
+      });
       toast.success(`Bienvenido, ${data.fullName}`);
       router.push("/dashboard/my-courses");
     },
@@ -62,14 +59,11 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       clearSessionQueries();
-      login(
-        { accessToken: data.accessToken, refreshToken: data.refreshToken },
-        {
-          email: data.email,
-          fullName: data.fullName,
-          role: data.role,
-        }
-      );
+      login({
+        email: data.email,
+        fullName: data.fullName,
+        role: data.role,
+      });
 
       toast.success("Cuenta creada exitosamente");
       router.push("/dashboard/my-courses");
@@ -79,8 +73,13 @@ export function useAuth() {
     },
   });
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearSessionQueries();
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // Clear local state even if the server session already expired.
+    }
     logout();
     router.push("/login");
     toast.success("Sesión cerrada");

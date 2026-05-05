@@ -3,17 +3,16 @@
 import { create } from "zustand";
 import { User } from "@/types";
 import {
+  clearLegacyTokens,
   clearTokens,
-  getAuthenticated,
   getStoredUser,
-  saveTokens,
   saveUser,
 } from "@/lib/auth";
 
 interface AuthState {
   user: Partial<User> | null;
   isAuthenticated: boolean;
-  login: (tokens: { accessToken: string, refreshToken: string }, user: Partial<User>) => void;
+  login: (user: Partial<User>) => void;
   logout: () => void;
   initialize: () => void;
 }
@@ -22,8 +21,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
 
-  login: (tokens, user) => {
-    saveTokens(tokens.accessToken, tokens.refreshToken);
+  login: (user) => {
     saveUser(user);
     set({ user, isAuthenticated: true });
   },
@@ -34,9 +32,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   initialize: () => {
+    clearLegacyTokens();
     const user = getStoredUser();
 
-    if (user && getAuthenticated()) {
+    if (user) {
       set({ user, isAuthenticated: true });
       return;
     }
