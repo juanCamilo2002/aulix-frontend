@@ -10,6 +10,18 @@ const api = axios.create({
 });
 
 type RetriableRequest = AxiosRequestConfig & { _retry?: boolean };
+const MUTATING_METHODS = new Set(["post", "put", "patch", "delete"]);
+
+api.interceptors.request.use((config) => {
+  const method = config.method?.toLowerCase();
+  const csrfToken = getCookie("csrfToken");
+
+  if (method && MUTATING_METHODS.has(method) && csrfToken) {
+    config.headers.set("X-CSRF-Token", csrfToken);
+  }
+
+  return config;
+});
 
 api.interceptors.response.use(
   (response) => response,
@@ -48,5 +60,14 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1] ?? null;
+}
 
 export default api;
