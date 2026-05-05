@@ -41,8 +41,10 @@ export default function Navbar() {
             <ThemeToggle />
             {/* User menu */}
             <div className="relative">
-            <button
+<button
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-haspopup="menu"
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-surface-hover transition-colors"
             >
               <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center">
@@ -53,8 +55,11 @@ export default function Navbar() {
               </span>
             </button>
 
-            {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-border py-1 z-50">
+{menuOpen && (
+              <div
+                className="absolute right-0 mt-2 w-48 bg-surface rounded-xl shadow-lg border border-border py-1 z-50"
+                role="menu"
+              >
                 <div className="px-4 py-2 border-b border-border-muted">
                   <p className="text-sm font-medium text-content">{user?.fullName}</p>
                   <p className="text-xs text-content-muted">{user?.email}</p>
@@ -62,6 +67,7 @@ export default function Navbar() {
                 <button
                   onClick={() => { logout(); setMenuOpen(false); }}
                   className="w-full flex items-center gap-2 px-4 py-2 text-sm text-danger-600 hover:bg-danger-50 transition-colors"
+                  role="menuitem"
                 >
                   <LogOut className="w-4 h-4" />
                   Cerrar sesión
