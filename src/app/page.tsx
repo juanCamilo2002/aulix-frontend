@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface">
       <PublicNavbar />
 
       <section className="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-accent-900 text-white">
@@ -57,13 +57,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-app">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-content mb-4">
               Todo lo que necesitas para aprender
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
+            <p className="text-content-muted max-w-xl mx-auto">
               Una plataforma completa diseñada para que puedas enfocarte en lo
               que importa: aprender.
             </p>
@@ -73,15 +73,15 @@ export default function LandingPage() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-md transition-shadow"
+                className="bg-surface rounded-2xl p-8 border border-border hover:shadow-md transition-shadow"
               >
                 <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mb-5">
                   <feature.icon className="w-6 h-6 text-brand-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-content mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-content-muted text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -90,13 +90,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-content mb-4">
               Empieza en 3 pasos
             </h2>
-            <p className="text-gray-500">
+            <p className="text-content-muted">
               Comenzar es más fácil de lo que crees
             </p>
           </div>
@@ -107,20 +107,20 @@ export default function LandingPage() {
                 <div className="w-14 h-14 bg-brand-600 text-white text-xl font-bold rounded-2xl flex items-center justify-center mx-auto mb-5">
                   {index + 1}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-content mb-2">
                   {step.title}
                 </h3>
-                <p className="text-gray-500 text-sm">{step.description}</p>
+                <p className="text-content-muted text-sm">{step.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-app">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-content mb-4">
               Lo que dicen nuestros estudiantes
             </h2>
           </div>
@@ -129,7 +129,7 @@ export default function LandingPage() {
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial.name}
-                className="bg-white rounded-2xl p-6 border border-gray-200"
+                className="bg-surface rounded-2xl p-6 border border-border"
               >
                 <div className="flex items-center gap-1 mb-4">
                   {Array.from({ length: 5 }).map((_, index) => (
@@ -139,7 +139,7 @@ export default function LandingPage() {
                     />
                   ))}
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5">
+                <p className="text-content-muted text-sm leading-relaxed mb-5">
                   &ldquo;{testimonial.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
@@ -147,10 +147,10 @@ export default function LandingPage() {
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold text-content">
                       {testimonial.name}
                     </p>
-                    <p className="text-xs text-gray-400">{testimonial.role}</p>
+                    <p className="text-xs text-content-soft">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
@@ -177,7 +177,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="bg-gray-900 text-gray-400 py-12">
+      <footer className="bg-gray-900 text-content-soft py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">

@@ -72,25 +72,25 @@ export default function CoursePlayerPage() {
 
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 -my-8">
-      <aside className="w-80 flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto hidden lg:block">
-        <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+      <aside className="w-80 flex-shrink-0 bg-surface border-r border-border overflow-y-auto hidden lg:block">
+        <div className="p-4 border-b border-border sticky top-0 bg-surface z-10">
           <Link
             href="/dashboard/my-courses"
             className="text-xs text-brand-600 hover:underline block mb-2"
           >
             &lt;- Mis cursos
           </Link>
-          <h2 className="font-semibold text-gray-900 text-sm line-clamp-2">
+          <h2 className="font-semibold text-content text-sm line-clamp-2">
             {course.title}
           </h2>
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-content-muted mb-1">
               <span>
                 {completedCount}/{totalLessons} lecciones
               </span>
               <span>{progressPercent}%</span>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-1.5">
+            <div className="w-full bg-surface-muted rounded-full h-1.5">
               <div
                 className="bg-brand-600 h-1.5 rounded-full transition-all"
                 style={{ width: `${progressPercent}%` }}
@@ -112,7 +112,7 @@ export default function CoursePlayerPage() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto bg-gray-50">
+      <main className="flex-1 overflow-y-auto bg-app">
         <MobileCourseLessonList
           course={course}
           activeLesson={activeLesson}
@@ -155,7 +155,7 @@ export default function CoursePlayerPage() {
                       )?.title
                     }
                   </p>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-content">
                     {activeLesson.title}
                   </h1>
                 </div>
@@ -189,8 +189,8 @@ export default function CoursePlayerPage() {
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">Selecciona una lección para comenzar</p>
+              <BookOpen className="w-16 h-16 text-content-subtle mx-auto mb-4" />
+              <p className="text-content-muted">Selecciona una lección para comenzar</p>
             </div>
           </div>
         )}

@@ -106,16 +106,20 @@ Tokens principales:
 - `brand`: color primario de la plataforma.
 - `brand-accent`: color secundario para gradientes y acentos visuales.
 - `success`, `danger` y `warning`: colores semánticos para estados.
+- `app`, `surface`, `border` y `content`: tokens semánticos para fondos, bordes y texto en modo claro/oscuro.
 
 Ejemplos de uso en componentes:
 
 ```tsx
 className="bg-brand-600 text-white hover:bg-brand-700"
 className="bg-gradient-to-br from-brand-900 to-brand-accent-900"
+className="bg-surface text-content border-border"
 className="text-danger-600"
 ```
 
 Para soportar temas o personalización por tenant, la idea es cambiar los valores de las variables `--brand-*` y `--brand-accent-*` sin reemplazar clases en los componentes.
+
+El tema visual se controla con `src/store/themeStore.ts` y se persiste en `localStorage` bajo la clave `theme`. El valor guardado puede ser `light` o `dark`; al cargar la aplicación se aplica la clase `dark` en el elemento `<html>` antes de hidratar React.
 
 ## API Esperada
 

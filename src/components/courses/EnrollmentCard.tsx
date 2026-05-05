@@ -7,7 +7,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
   return (
     <Link
       href={`/dashboard/courses/${enrollment.courseSlug}`}
-      className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group"
+      className="bg-surface rounded-2xl border border-border overflow-hidden hover:shadow-md transition-shadow group"
     >
       <div className="h-40 bg-gradient-to-br from-brand-500 to-brand-accent-600 relative">
         {enrollment.courseThumbnail ? (
@@ -33,18 +33,18 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
       </div>
 
       <div className="p-5">
-        <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-3">
+        <h3 className="font-semibold text-content group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors line-clamp-2 mb-3">
           {enrollment.courseTitle}
         </h3>
 
         <div className="mb-2">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
+          <div className="flex justify-between text-xs text-content-muted mb-1">
             <span>
               {enrollment.completedLessons} de {enrollment.totalLessons} lecciones
             </span>
             <span>{enrollment.progressPercent}%</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
+          <div className="w-full bg-surface-muted rounded-full h-2">
             <div
               className="bg-brand-600 h-2 rounded-full transition-all"
               style={{ width: `${enrollment.progressPercent}%` }}
@@ -52,7 +52,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-xs text-gray-400 mt-3">
+        <div className="flex items-center gap-1 text-xs text-content-soft mt-3">
           <Clock className="w-3 h-3" />
           <span>
             {new Date(enrollment.enrolledAt).toLocaleDateString("es-ES", {

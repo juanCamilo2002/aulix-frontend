@@ -10,7 +10,7 @@ export default function CourseCard({ course }: { course: Course }) {
   return (
     <Link
       href={`/courses/${course.slug}`}
-      className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
+      className="bg-surface rounded-2xl border border-border overflow-hidden hover:shadow-md transition-all group"
     >
       <div className="h-44 bg-gradient-to-br from-brand-500 to-brand-accent-600 relative">
         {course.thumbnailUrl ? (
@@ -30,15 +30,15 @@ export default function CourseCard({ course }: { course: Course }) {
       </div>
 
       <div className="p-5">
-        <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-1">
+        <h3 className="font-semibold text-content group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors line-clamp-2 mb-1">
           {course.title}
         </h3>
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+        <p className="text-sm text-content-muted mb-4 line-clamp-2">
           {course.description}
         </p>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-xs text-gray-400">
+          <div className="flex items-center gap-1 text-xs text-content-soft">
             <Users className="w-3.5 h-3.5" />
             <span>{course.instructorName}</span>
           </div>
@@ -50,7 +50,7 @@ export default function CourseCard({ course }: { course: Course }) {
         </div>
 
         {totalLessons > 0 && (
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-content-soft mt-2">
             {course.modules?.length} módulos · {totalLessons} lecciones
           </p>
         )}

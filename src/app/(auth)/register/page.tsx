@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 const schema = z.object({
   fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
@@ -26,14 +27,17 @@ export default function RegisterPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-app flex items-center justify-center p-4 relative">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-brand-600">Aulix</h1>
-          <p className="text-gray-500 mt-2">Crea tu cuenta gratis</p>
+          <p className="text-content-muted mt-2">Crea tu cuenta gratis</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-8">
           <form
             onSubmit={handleSubmit((data) => registerUser(data))}
             className="space-y-5"
@@ -73,7 +77,7 @@ export default function RegisterPage() {
               Crear cuenta
             </Button>
           </form>
-          <p className="text-center text-sm text-gray-500 mt-6">
+          <p className="text-center text-sm text-content-muted mt-6">
             ¿Ya tienes cuenta?{" "}
             <Link
               href="/login"

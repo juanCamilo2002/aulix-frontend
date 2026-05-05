@@ -12,7 +12,7 @@ export default function MyCoursesPage() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-2xl h-64 animate-pulse" />
+          <div key={i} className="bg-surface rounded-2xl h-64 animate-pulse" />
         ))}
       </div>
     );
@@ -21,11 +21,11 @@ export default function MyCoursesPage() {
   if (!enrollments?.length) {
     return (
       <div className="text-center py-20">
-        <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+        <BookOpen className="w-16 h-16 text-content-subtle mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-content-muted mb-2">
           No tienes cursos aún
         </h2>
-        <p className="text-gray-500 mb-6">
+        <p className="text-content-muted mb-6">
           Explora el catálogo y comienza a aprender hoy
         </p>
         <Link
@@ -40,7 +40,7 @@ export default function MyCoursesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Mis cursos</h1>
+      <h1 className="text-2xl font-bold text-content">Mis cursos</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {enrollments.map((enrollment) => (
           <EnrollmentCard key={enrollment.id} enrollment={enrollment} />

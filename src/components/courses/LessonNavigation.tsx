@@ -17,7 +17,7 @@ export default function LessonNavigation({
   const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-6 border-t border-gray-200">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-6 border-t border-border">
       {prev ? (
         <Button
           variant="secondary"

@@ -51,7 +51,7 @@ export default function CourseDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-app flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full" />
       </div>
     );
@@ -59,14 +59,14 @@ export default function CourseDetailPage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500">Curso no encontrado</p>
+      <div className="min-h-screen bg-app flex items-center justify-center">
+        <p className="text-content-muted">Curso no encontrado</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-app">
       <div className="bg-gradient-to-br from-brand-900 to-brand-accent-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-2xl">
@@ -102,7 +102,7 @@ export default function CourseDetailPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+            <h2 className="text-xl font-bold text-content mb-4">
               Contenido del curso
             </h2>
             <div className="space-y-3">
@@ -113,8 +113,8 @@ export default function CourseDetailPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 sticky top-24">
-              <div className="text-3xl font-bold text-gray-900 mb-1">
+            <div className="bg-surface rounded-2xl border border-border p-6 sticky top-24">
+              <div className="text-3xl font-bold text-content mb-1">
                 {course.price === 0
                   ? "Gratis"
                   : `$${course.price} ${course.currency}`}
@@ -137,7 +137,7 @@ export default function CourseDetailPage() {
                 </Button>
               )}
 
-              <ul className="mt-6 space-y-2 text-sm text-gray-500">
+              <ul className="mt-6 space-y-2 text-sm text-content-muted">
                 <li className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-brand-500" />
                   {course.modules?.length} módulos

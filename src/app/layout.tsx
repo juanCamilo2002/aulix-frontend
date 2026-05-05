@@ -5,6 +5,14 @@ import Providers from "@/components/layout/Providers";
 
 const geist = Geist({ subsets: ["latin"] });
 
+const themeScript = `
+try {
+  var theme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  document.documentElement.dataset.theme = theme;
+} catch (_) {}
+`;
+
 export const metadata: Metadata = {
   title: "Aulix - Plataforma de aprendizaje",
   description:
@@ -35,7 +43,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={geist.className}>
         <Providers>{children}</Providers>
       </body>

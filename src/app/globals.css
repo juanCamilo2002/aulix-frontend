@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
+
   --brand-50: #eef2ff;
   --brand-100: #e0e7ff;
   --brand-200: #c7d2fe;
@@ -25,6 +27,32 @@
   --danger-600: #dc2626;
   --danger-700: #b91c1c;
   --warning-400: #facc15;
+
+  --app-bg: #f9fafb;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f3f4f6;
+  --app-surface-hover: #f9fafb;
+  --app-border: #e5e7eb;
+  --app-border-muted: #f3f4f6;
+  --app-content: #111827;
+  --app-content-muted: #6b7280;
+  --app-content-soft: #9ca3af;
+  --app-content-subtle: #d1d5db;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --app-bg: #0f172a;
+  --app-surface: #111827;
+  --app-surface-muted: #1f2937;
+  --app-surface-hover: #1f2937;
+  --app-border: #374151;
+  --app-border-muted: #1f2937;
+  --app-content: #f9fafb;
+  --app-content-muted: #cbd5e1;
+  --app-content-soft: #94a3b8;
+  --app-content-subtle: #64748b;
 }
 
 @theme inline {
@@ -52,4 +80,20 @@
   --color-danger-600: var(--danger-600);
   --color-danger-700: var(--danger-700);
   --color-warning-400: var(--warning-400);
+
+  --color-app: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-surface-muted: var(--app-surface-muted);
+  --color-surface-hover: var(--app-surface-hover);
+  --color-border: var(--app-border);
+  --color-border-muted: var(--app-border-muted);
+  --color-content: var(--app-content);
+  --color-content-muted: var(--app-content-muted);
+  --color-content-soft: var(--app-content-soft);
+  --color-content-subtle: var(--app-content-subtle);
+}
+
+body {
+  background: var(--app-bg);
+  color: var(--app-content);
 }

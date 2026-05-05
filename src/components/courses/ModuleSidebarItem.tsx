@@ -31,20 +31,20 @@ export default function ModuleSidebarItem({
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 text-left"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-hover text-left transition-colors"
       >
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-800 truncate">
+          <p className="text-sm font-medium text-content truncate">
             {module.title}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-content-soft">
             {completedInModule}/{module.lessons.length}
           </p>
         </div>
         {open ? (
-          <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <ChevronUp className="w-4 h-4 text-content-soft flex-shrink-0" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <ChevronDown className="w-4 h-4 text-content-soft flex-shrink-0" />
         )}
       </button>
 
@@ -58,35 +58,35 @@ export default function ModuleSidebarItem({
               <button
                 key={lesson.id}
                 onClick={() => onSelectLesson(lesson.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left border-r-2 transition-colors ${
                   isActive
-                    ? "bg-brand-50 border-r-2 border-brand-600"
-                    : "hover:bg-gray-50"
+                    ? "bg-brand-100/70 border-brand-500 dark:bg-brand-500/15"
+                    : "border-transparent hover:bg-surface-hover"
                 }`}
               >
                 {lessonProgress?.completed ? (
                   <CheckCircle className="w-4 h-4 text-success-500 flex-shrink-0" />
                 ) : (
-                  <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                  <Circle className="w-4 h-4 text-content-subtle flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p
                     className={`text-xs truncate ${
-                      isActive ? "text-brand-700 font-medium" : "text-gray-700"
+                      isActive ? "text-content font-semibold" : "text-content-muted"
                     }`}
                   >
                     {lesson.title}
                   </p>
                   {lesson.durationSecs > 0 && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-content-soft">
                       {Math.floor(lesson.durationSecs / 60)}m
                     </p>
                   )}
                 </div>
                 {lesson.type === "VIDEO" ? (
-                  <Play className="w-3 h-3 text-gray-300 flex-shrink-0" />
+                  <Play className="w-3 h-3 text-content-subtle flex-shrink-0" />
                 ) : (
-                  <FileText className="w-3 h-3 text-gray-300 flex-shrink-0" />
+                  <FileText className="w-3 h-3 text-content-subtle flex-shrink-0" />
                 )}
               </button>
             );
