@@ -13,6 +13,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 interface AuthState {
   user: Partial<User> | null;
   isAuthenticated: boolean;
+  isInitializing: boolean;
   login: (user: Partial<User>) => void;
   logout: () => void;
   initialize: () => Promise<void>;
@@ -21,6 +22,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
+  isInitializing: true,
 
   login: (user) => {
     saveUser(user);
@@ -51,10 +53,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
 
       saveUser(body.data);
-      set({ user: body.data, isAuthenticated: true });
+      set({ user: body.data, isAuthenticated: true, isInitializing: false });
     } catch {
       clearTokens();
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, isInitializing: false });
     }
   }
 }));
