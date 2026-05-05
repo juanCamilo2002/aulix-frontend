@@ -11,6 +11,7 @@ const api = axios.create({
 
 type RetriableRequest = AxiosRequestConfig & { _retry?: boolean };
 const MUTATING_METHODS = new Set(["post", "put", "patch", "delete"]);
+const AUTH_ENDPOINTS = ["/auth/login", "/auth/register", "/auth/refresh"];
 
 api.interceptors.request.use((config) => {
   const method = config.method?.toLowerCase();
@@ -28,13 +29,14 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config as RetriableRequest | undefined;
     const requestUrl = originalRequest?.url ?? "";
+    const isAuthEndpoint = AUTH_ENDPOINTS.some((endpoint) =>
+      requestUrl.includes(endpoint)
+    );
     const canRefresh =
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry &&
-      !requestUrl.includes("/auth/login") &&
-      !requestUrl.includes("/auth/register") &&
-      !requestUrl.includes("/auth/refresh");
+      !isAuthEndpoint;
 
     if (canRefresh) {
       originalRequest._retry = true;
@@ -49,7 +51,7 @@ api.interceptors.response.use(
           window.location.href = "/login";
         }
       }
-    } else if (error.response?.status === 401) {
+    } else if (error.response?.status === 401 && !isAuthEndpoint) {
       clearTokens();
 
       if (typeof window !== "undefined") {
