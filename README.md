@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aulix Frontend
 
-## Getting Started
+Frontend de **Aulix**, una plataforma de aprendizaje online para explorar cursos, registrarse, matricularse, ver contenido y llevar seguimiento del progreso de las lecciones.
 
-First, run the development server:
+Este proyecto forma parte de una aplicación full-stack personal construida con un enfoque serio de producto. El backend se desarrolla con **Spring Boot** y expone la API consumida por este frontend.
+
+## Stack
+
+- Next.js 16 con App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- TanStack React Query
+- Zustand
+- Axios
+- React Hook Form
+- Zod
+- Sonner
+- Lucide React
+- React Player
+
+## Requisitos
+
+- Node.js 20 o superior recomendado
+- npm
+- Backend de Aulix ejecutándose localmente o una URL remota compatible
+
+## Configuración
+
+Crea un archivo `.env.local` en la raíz del proyecto con la URL del backend:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+```
+
+Si no se define esta variable, la aplicación usa por defecto:
+
+```txt
+http://localhost:8000/api
+```
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación queda disponible en:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura Principal
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```txt
+src/
+├─ app/                 Rutas y layouts de Next.js
+├─ components/          Componentes reutilizables de layout y UI
+├─ hooks/               Lógica de autenticación, cursos, matrícula y progreso
+├─ lib/                 Cliente API, auth, React Query y utilidades
+├─ store/               Estado global con Zustand
+├─ types/               Tipos compartidos del dominio
+└─ proxy.ts             Protección básica de rutas autenticadas
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Funcionalidades
 
-## Deploy on Vercel
+- Landing page pública
+- Registro e inicio de sesión
+- Catálogo de cursos
+- Detalle público de curso
+- Matrícula en cursos
+- Dashboard de cursos del estudiante
+- Reproductor de lecciones
+- Seguimiento de progreso por lección
+- Notificaciones toast para acciones principales
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Esperada
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El frontend consume endpoints relacionados con:
+
+- Autenticación: login y registro
+- Cursos publicados
+- Matrículas del usuario
+- Progreso de lecciones
+
+La URL base se configura con `NEXT_PUBLIC_API_URL`.
+
+## Notas Del Proyecto
+
+- La autenticación actual usa JWT almacenado en cliente y una cookie para proteger rutas desde `proxy.ts`.
+- React Query administra caché, reintentos e invalidación de datos remotos.
+- Tailwind CSS concentra la mayor parte del diseño directamente en los componentes.
+- El proyecto está orientado inicialmente a un MVP, pero con intención de evolucionar hacia una aplicación mantenible y robusta.
