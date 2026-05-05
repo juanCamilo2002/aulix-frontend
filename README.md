@@ -134,7 +134,7 @@ La URL base se configura con `NEXT_PUBLIC_API_URL`.
 
 ## Notas Del Proyecto
 
-- La autenticación actual usa JWT almacenado en cliente y una cookie para proteger rutas desde `proxy.ts`.
+- La autenticación actual usa cookies HttpOnly para JWT, no localStorage.
 - React Query administra caché, reintentos e invalidación de datos remotos.
 - Tailwind CSS concentra la mayor parte del diseño directamente en los componentes.
 - El proyecto está orientado inicialmente a un MVP, pero con intención de evolucionar hacia una aplicación mantenible y robusta.
