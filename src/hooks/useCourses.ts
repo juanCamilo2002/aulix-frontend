@@ -19,7 +19,8 @@ export function usePublishedCourses() {
     queryFn: async () => {
       const res = await api.get<ApiResponse<Course[]>>("/courses");
       return unwrapApiData(res.data);
-    }
+    },
+    staleTime: 1000 * 60 * 5,
   });
 }
 

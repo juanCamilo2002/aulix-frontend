@@ -2,11 +2,11 @@
 
 import CourseCard from "@/components/courses/CourseCard";
 import { usePublishedCourses } from "@/hooks/useCourses";
-import { BookOpen, Search } from "lucide-react";
+import { BookOpen, Search, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 export default function CoursesPage() {
-  const { data: courses, isLoading } = usePublishedCourses();
+  const { data: courses, isLoading, isError, error } = usePublishedCourses();
   const [search, setSearch] = useState("");
 
   const filtered = courses?.filter((course) =>
@@ -43,6 +43,12 @@ export default function CoursesPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="bg-surface rounded-2xl h-72 animate-pulse" />
             ))}
+          </div>
+        ) : isError ? (
+          <div className="text-center py-20">
+            <AlertCircle className="w-16 h-16 text-danger-500 mx-auto mb-4" />
+            <p className="text-content font-medium mb-2">Error al cargar cursos</p>
+            <p className="text-content-muted text-sm">Intenta de nuevo más tarde</p>
           </div>
         ) : !filtered?.length ? (
           <div className="text-center py-20">
