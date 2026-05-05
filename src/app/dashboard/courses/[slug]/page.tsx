@@ -11,10 +11,19 @@ import {
   CheckCircle,
   FileText,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import ReactPlayer from "react-player";
+
+const ReactPlayer = dynamic(() => import("react-player"), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-black aspect-video w-full flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+});
 
 export default function CoursePlayerPage() {
   const { slug } = useParams<{ slug: string }>();
