@@ -36,7 +36,7 @@ export interface Course {
   thumbnailUrl?: string;
   published: boolean;
   instructorName: string;
-  modules: Module[];
+  modules?: Module[];
   createdAt: string;
 }
 
