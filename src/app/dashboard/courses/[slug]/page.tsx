@@ -2,6 +2,7 @@
 
 import Button from "@/components/ui/Button";
 import LessonNavigation from "@/components/courses/LessonNavigation";
+import MobileCourseLessonList from "@/components/courses/MobileCourseLessonList";
 import ModuleSidebarItem from "@/components/courses/ModuleSidebarItem";
 import { useCourse, useCourseProgress, useUpdateProgress } from "@/hooks/useCourses";
 import { Lesson, LessonProgress } from "@/types";
@@ -112,6 +113,16 @@ export default function CoursePlayerPage() {
       </aside>
 
       <main className="flex-1 overflow-y-auto bg-gray-50">
+        <MobileCourseLessonList
+          course={course}
+          activeLesson={activeLesson}
+          completedCount={completedCount}
+          totalLessons={totalLessons}
+          progressPercent={progressPercent}
+          getLessonProgress={getLessonProgress}
+          onSelectLesson={setActiveLessonId}
+        />
+
         {activeLesson ? (
           <div>
             {activeLesson.type === "VIDEO" && activeLesson.videoUrl ? (
@@ -134,8 +145,8 @@ export default function CoursePlayerPage() {
               </div>
             )}
 
-            <div className="max-w-3xl mx-auto px-6 py-8">
-              <div className="flex items-start justify-between gap-4 mb-6">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                 <div>
                   <p className="text-sm text-indigo-600 font-medium mb-1">
                     {
@@ -156,7 +167,7 @@ export default function CoursePlayerPage() {
                   }
                   size="sm"
                   onClick={() => handleLessonComplete(activeLesson)}
-                  className="flex-shrink-0"
+                  className="w-full sm:w-auto flex-shrink-0"
                 >
                   {getLessonProgress(activeLesson.id)?.completed ? (
                     <span className="flex items-center gap-1">
