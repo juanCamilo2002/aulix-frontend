@@ -3,7 +3,6 @@
 import { create } from "zustand";
 import { ApiResponse, User } from "@/types";
 import {
-  clearLegacyTokens,
   clearTokens,
   saveUser,
 } from "@/lib/auth";
@@ -35,8 +34,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   initialize: async () => {
-    clearLegacyTokens();
-
     try {
       const response = await fetch(`${API_URL}/auth/me`, {
         credentials: "include",
