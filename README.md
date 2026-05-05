@@ -71,13 +71,19 @@ npm run lint
 ```txt
 src/
 ├─ app/                 Rutas y layouts de Next.js
-├─ components/          Componentes reutilizables de layout y UI
+├─ components/          Componentes reutilizables de dominio, layout y UI
 ├─ hooks/               Lógica de autenticación, cursos, matrícula y progreso
 ├─ lib/                 Cliente API, auth, React Query y utilidades
 ├─ store/               Estado global con Zustand
 ├─ types/               Tipos compartidos del dominio
 └─ proxy.ts             Protección básica de rutas autenticadas
 ```
+
+Dentro de `components/` se separan responsabilidades por contexto:
+
+- `components/layout`: navegación y proveedores globales.
+- `components/ui`: componentes base como botones e inputs.
+- `components/courses`: tarjetas, acordeones, navegación de lecciones y piezas del reproductor de cursos.
 
 ## Funcionalidades
 

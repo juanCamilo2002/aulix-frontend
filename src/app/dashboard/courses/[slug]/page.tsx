@@ -1,16 +1,14 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import LessonNavigation from "@/components/courses/LessonNavigation";
+import ModuleSidebarItem from "@/components/courses/ModuleSidebarItem";
 import { useCourse, useCourseProgress, useUpdateProgress } from "@/hooks/useCourses";
-import { Course, Lesson, LessonProgress, Module } from "@/types";
+import { Lesson, LessonProgress } from "@/types";
 import {
   BookOpen,
   CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  Circle,
   FileText,
-  Play,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -186,129 +184,6 @@ export default function CoursePlayerPage() {
           </div>
         )}
       </main>
-    </div>
-  );
-}
-
-function ModuleSidebarItem({
-  module,
-  activeLesson,
-  getLessonProgress,
-  onSelectLesson,
-}: {
-  module: Module;
-  activeLesson: Lesson | null;
-  getLessonProgress: (id: string) => LessonProgress | undefined;
-  onSelectLesson: (lessonId: string) => void;
-}) {
-  const [open, setOpen] = useState(true);
-  const completedInModule = module.lessons.filter(
-    (lesson) => getLessonProgress(lesson.id)?.completed
-  ).length;
-
-  return (
-    <div>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 text-left"
-      >
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-800 truncate">
-            {module.title}
-          </p>
-          <p className="text-xs text-gray-400">
-            {completedInModule}/{module.lessons.length}
-          </p>
-        </div>
-        {open ? (
-          <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        )}
-      </button>
-
-      {open && (
-        <div>
-          {module.lessons.map((lesson) => {
-            const lessonProgress = getLessonProgress(lesson.id);
-            const isActive = activeLesson?.id === lesson.id;
-
-            return (
-              <button
-                key={lesson.id}
-                onClick={() => onSelectLesson(lesson.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                  isActive
-                    ? "bg-indigo-50 border-r-2 border-indigo-600"
-                    : "hover:bg-gray-50"
-                }`}
-              >
-                {lessonProgress?.completed ? (
-                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                ) : (
-                  <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p
-                    className={`text-xs truncate ${
-                      isActive ? "text-indigo-700 font-medium" : "text-gray-700"
-                    }`}
-                  >
-                    {lesson.title}
-                  </p>
-                  {lesson.durationSecs > 0 && (
-                    <p className="text-xs text-gray-400">
-                      {Math.floor(lesson.durationSecs / 60)}m
-                    </p>
-                  )}
-                </div>
-                {lesson.type === "VIDEO" ? (
-                  <Play className="w-3 h-3 text-gray-300 flex-shrink-0" />
-                ) : (
-                  <FileText className="w-3 h-3 text-gray-300 flex-shrink-0" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function LessonNavigation({
-  course,
-  activeLesson,
-  onNavigate,
-}: {
-  course: Course;
-  activeLesson: Lesson;
-  onNavigate: (lesson: Lesson) => void;
-}) {
-  const allLessons = course.modules?.flatMap((module) => module.lessons) ?? [];
-  const currentIndex = allLessons.findIndex((lesson) => lesson.id === activeLesson.id);
-  const prev = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
-  const next = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
-
-  return (
-    <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-      {prev ? (
-        <Button variant="secondary" size="sm" onClick={() => onNavigate(prev)}>
-          &lt;- {prev.title}
-        </Button>
-      ) : (
-        <div />
-      )}
-      {next ? (
-        <Button size="sm" onClick={() => onNavigate(next)}>
-          {next.title} -&gt;
-        </Button>
-      ) : (
-        <div className="text-sm text-green-600 font-medium flex items-center gap-1">
-          <CheckCircle className="w-4 h-4" />
-          Fin del curso
-        </div>
-      )}
     </div>
   );
 }
