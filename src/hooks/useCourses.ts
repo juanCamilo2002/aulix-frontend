@@ -11,6 +11,7 @@ import {
   UpdateLessonProgressRequest,
 } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 export function usePublishedCourses() {
@@ -84,6 +85,33 @@ export function useCourseProgress(courseId: string) {
 
 export function useUpdateProgress() {
   const queryClient = useQueryClient();
+
+  const pendingProgress = useRef<Map<string, UpdateLessonProgressRequest>>(new Map());
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const flushPendingProgress = async () => {
+    if (pendingProgress.current.size === 0) return;
+
+    const batch = Array.from(pendingProgress.current.values());
+    pendingProgress.current.clear();
+
+    for (const progress of batch) {
+      try {
+        await api.put<ApiResponse<LessonProgress>>(
+          `/enrollments/courses/${progress.courseId}/lessons/${progress.lessonId}/progress`,
+          { completed: progress.completed, lastPosition: progress.lastPosition }
+        );
+      } catch {
+        // Silent fail - progress will be retried on next save
+      }
+    }
+  };
+
+  const scheduleFlush = () => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(flushPendingProgress, 30000);
+  };
+
   return useMutation<
     LessonProgress | undefined,
     ApiAxiosError,
@@ -95,17 +123,31 @@ export function useUpdateProgress() {
       completed,
       lastPosition,
     }) => {
-      const res = await api.put<ApiResponse<LessonProgress>>(
-        `/enrollments/courses/${courseId}/lessons/${lessonId}/progress`,
-        { completed, lastPosition }
-      );
-      return res.data.data;
+      const key = `${courseId}-${lessonId}`;
+      const existing = pendingProgress.current.get(key);
+
+      if (existing && Math.abs(existing.lastPosition - lastPosition) < 5) {
+        return undefined;
+      }
+
+      pendingProgress.current.set(key, { courseId, lessonId, completed, lastPosition });
+      scheduleFlush();
+
+      return undefined;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: enrollmentKeys.progress(variables.courseId)
+    onMutate: (variables) => {
+      const key = enrollmentKeys.progress(variables.courseId);
+      queryClient.setQueryData<LessonProgress[]>(key, (old) => {
+        if (!old) return old;
+        return old.map(p =>
+          p.lessonId === variables.lessonId
+            ? { ...p, completed: variables.completed, lastPosition: variables.lastPosition }
+            : p
+        );
       });
-      queryClient.invalidateQueries({ queryKey: enrollmentKeys.myCourses() });
+    },
+    onError: (err, variables) => {
+      queryClient.invalidateQueries({ queryKey: enrollmentKeys.progress(variables.courseId) });
     }
   });
 }

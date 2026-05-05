@@ -6,7 +6,7 @@ import { BookOpen, Search, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 export default function CoursesPage() {
-  const { data: courses, isLoading, isError, error } = usePublishedCourses();
+  const { data: courses, isLoading, isError } = usePublishedCourses();
   const [search, setSearch] = useState("");
 
   const filtered = courses?.filter((course) =>
