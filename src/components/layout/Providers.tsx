@@ -14,7 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         initializeTheme();
-        initialize();
+        void initialize();
     }, [initialize, initializeTheme]);
 
     return (

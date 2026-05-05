@@ -1,20 +1,21 @@
 "use client";
 
 import { create } from "zustand";
-import { User } from "@/types";
+import { ApiResponse, User } from "@/types";
 import {
   clearLegacyTokens,
   clearTokens,
-  getStoredUser,
   saveUser,
 } from "@/lib/auth";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
 interface AuthState {
   user: Partial<User> | null;
   isAuthenticated: boolean;
   login: (user: Partial<User>) => void;
   logout: () => void;
-  initialize: () => void;
+  initialize: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -31,16 +32,29 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, isAuthenticated: false });
   },
 
-  initialize: () => {
+  initialize: async () => {
     clearLegacyTokens();
-    const user = getStoredUser();
 
-    if (user) {
-      set({ user, isAuthenticated: true });
-      return;
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        credentials: "include",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Session is not valid");
+      }
+
+      const body = (await response.json()) as ApiResponse<Partial<User>>;
+      if (!body.data) {
+        throw new Error("Session response missing user");
+      }
+
+      saveUser(body.data);
+      set({ user: body.data, isAuthenticated: true });
+    } catch {
+      clearTokens();
+      set({ user: null, isAuthenticated: false });
     }
-
-    clearTokens();
-    set({ user: null, isAuthenticated: false });
   }
 }));

@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 const protectedRoutes = ["/dashboard"];
 const authRoutes = ["/login", "/register"];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
-export function proxy(request: NextRequest) {
-    const token = request.cookies.get("accessToken")?.value;
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     const isProtected = protectedRoutes.some(route =>
@@ -15,17 +15,46 @@ export function proxy(request: NextRequest) {
         pathname.startsWith(route)
     );
 
-    if (isProtected && !token) {
-        return NextResponse.redirect(new URL("/login", request.url));
+    if (!isProtected && !isAuthRoute) {
+        return NextResponse.next();
     }
 
-    if (isAuthRoute && token) {
+    const hasSession = await hasValidSession(request);
+
+    if (isProtected && !hasSession) {
+        const response = NextResponse.redirect(new URL("/login", request.url));
+        clearAuthCookies(response);
+        return response;
+    }
+
+    if (isAuthRoute && hasSession) {
         return NextResponse.redirect(
             new URL("/dashboard/my-courses", request.url)
         );
     }
 
     return NextResponse.next();
+}
+
+async function hasValidSession(request: NextRequest) {
+    const cookie = request.headers.get("cookie");
+    if (!cookie) return false;
+
+    try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+            headers: { cookie },
+            cache: "no-store",
+        });
+
+        return response.ok;
+    } catch {
+        return false;
+    }
+}
+
+function clearAuthCookies(response: NextResponse) {
+    response.cookies.delete("accessToken");
+    response.cookies.delete("refreshToken");
 }
 
 export const config = {
