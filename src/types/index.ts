@@ -1,3 +1,5 @@
+import type { AxiosError } from "axios";
+
 export interface User {
   id: string;
   email: string;
@@ -13,6 +15,17 @@ export interface AuthResponse {
   fullName: string;
   role: User["role"];
   tenantSlug: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
 }
 
 export interface Course {
@@ -65,9 +78,20 @@ export interface LessonProgress {
   lastPosition: number;
 }
 
-export interface ApiResponse<T> {
+export interface UpdateLessonProgressRequest {
+  courseId: string;
+  lessonId: string;
+  completed: boolean;
+  lastPosition: number;
+}
+
+export type ApiValidationErrors = Record<string, string>;
+
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
-  data: T;
-  timestamp: string;
+  data?: T;
+  timeStamp?: string;
 }
+
+export type ApiAxiosError<T = unknown> = AxiosError<ApiResponse<T>>;

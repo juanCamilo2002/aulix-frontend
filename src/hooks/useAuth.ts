@@ -1,28 +1,18 @@
 import api from "@/lib/api";
+import { getApiErrorMessage } from "@/lib/apiError";
+import { unwrapApiData } from "@/lib/apiResponse";
+import { enrollmentKeys } from "@/lib/queryKeys";
 import { useAuthStore } from "@/store/authStore";
-import { ApiResponse, AuthResponse } from "@/types";
+import {
+  ApiAxiosError,
+  ApiResponse,
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface LoginData {
-  email: string;
-  password: string;
-}
-
-interface RegisterData {
-  fullName: string;
-  email: string;
-  password: string;
-}
-
-function getApiErrorMessage(
-  error: AxiosError<ApiResponse<unknown>>,
-  fallback: string
-) {
-  return error.response?.data?.message || fallback;
-}
 
 export function useAuth() {
   const { login, logout, user, isAuthenticated } = useAuthStore();
@@ -30,18 +20,18 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   const clearSessionQueries = () => {
-    queryClient.removeQueries({ queryKey: ["enrollments"] });
-    queryClient.removeQueries({ queryKey: ["progress"] });
+    queryClient.removeQueries({ queryKey: enrollmentKeys.myCourses() });
+    queryClient.removeQueries({ queryKey: enrollmentKeys.progressAll() });
   };
 
   const loginMutation = useMutation<
     AuthResponse,
-    AxiosError<ApiResponse<unknown>>,
-    LoginData
+    ApiAxiosError,
+    LoginRequest
   >({
     mutationFn: async (data) => {
       const res = await api.post<ApiResponse<AuthResponse>>("/auth/login", data);
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     onSuccess: (data) => {
       clearSessionQueries();
@@ -63,12 +53,12 @@ export function useAuth() {
 
   const registrationMutation = useMutation<
     AuthResponse,
-    AxiosError<ApiResponse<unknown>>,
-    RegisterData
+    ApiAxiosError,
+    RegisterRequest
   >({
     mutationFn: async (data) => {
       const res = await api.post<ApiResponse<AuthResponse>>("/auth/register", data);
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     onSuccess: (data) => {
       clearSessionQueries();

@@ -1,39 +1,48 @@
 import api from "@/lib/api";
-import { ApiResponse, Course, Enrollment, LessonProgress } from "@/types";
+import { getApiErrorMessage } from "@/lib/apiError";
+import { unwrapApiData } from "@/lib/apiResponse";
+import { courseKeys, enrollmentKeys } from "@/lib/queryKeys";
+import {
+  ApiAxiosError,
+  ApiResponse,
+  Course,
+  Enrollment,
+  LessonProgress,
+  UpdateLessonProgressRequest,
+} from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 export function usePublishedCourses() {
-  return useQuery({
-    queryKey: ["courses"],
+  return useQuery<Course[], ApiAxiosError>({
+    queryKey: courseKeys.list(),
     queryFn: async () => {
       const res = await api.get<ApiResponse<Course[]>>("/courses");
-      return res.data.data;
+      return unwrapApiData(res.data);
     }
   });
 }
 
 export function useCourse(slug: string) {
-  return useQuery({
-    queryKey: ["courses", slug],
+  return useQuery<Course, ApiAxiosError>({
+    queryKey: courseKeys.detail(slug),
     queryFn: async () => {
       const res = await api.get<ApiResponse<Course>>(`/courses/${slug}`);
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     enabled: !!slug,
   });
 }
 
 export function useMyEnrollments(options?: { enabled?: boolean }) {
-  return useQuery({
-    queryKey: ["enrollments"],
+  return useQuery<Enrollment[], ApiAxiosError>({
+    queryKey: enrollmentKeys.myCourses(),
     queryFn: async () => {
       const res = await api.get<ApiResponse<Enrollment[]>>(
         "/enrollments/my-courses"
       );
 
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     enabled: options?.enabled ?? true,
   });
@@ -41,32 +50,32 @@ export function useMyEnrollments(options?: { enabled?: boolean }) {
 
 export function useEnroll() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<Enrollment, ApiAxiosError, string>({
     mutationFn: async (courseId: string) => {
       const res = await api.post<ApiResponse<Enrollment>>(
         `/enrollments/courses/${courseId}`
       );
 
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["enrollments"] });
+      queryClient.invalidateQueries({ queryKey: enrollmentKeys.myCourses() });
       toast.success("¡Matriculado exitosamente!");
     },
-    onError: (error: AxiosError<ApiResponse<unknown>>) => {
-      toast.error(error.response?.data?.message || "Error al matricularse");
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error, "Error al matricularse"));
     },
   });
 }
 
 export function useCourseProgress(courseId: string) {
-  return useQuery({
-    queryKey: ["progress", courseId],
+  return useQuery<LessonProgress[], ApiAxiosError>({
+    queryKey: enrollmentKeys.progress(courseId),
     queryFn: async () => {
       const res = await api.get<ApiResponse<LessonProgress[]>>(
         `/enrollments/courses/${courseId}/progress`
       );
-      return res.data.data;
+      return unwrapApiData(res.data);
     },
     enabled: !!courseId,
   });
@@ -74,19 +83,18 @@ export function useCourseProgress(courseId: string) {
 
 export function useUpdateProgress() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<
+    LessonProgress | undefined,
+    ApiAxiosError,
+    UpdateLessonProgressRequest
+  >({
     mutationFn: async ({
       courseId,
       lessonId,
       completed,
       lastPosition,
-    }: {
-      courseId: string;
-      lessonId: string;
-      completed: boolean;
-      lastPosition: number;
     }) => {
-      const res = await api.put(
+      const res = await api.put<ApiResponse<LessonProgress>>(
         `/enrollments/courses/${courseId}/lessons/${lessonId}/progress`,
         { completed, lastPosition }
       );
@@ -94,9 +102,9 @@ export function useUpdateProgress() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["progress", variables.courseId]
+        queryKey: enrollmentKeys.progress(variables.courseId)
       });
-      queryClient.invalidateQueries({ queryKey: ["enrollments"] });
+      queryClient.invalidateQueries({ queryKey: enrollmentKeys.myCourses() });
     }
   });
 }
