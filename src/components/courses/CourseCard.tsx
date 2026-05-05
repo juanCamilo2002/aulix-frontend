@@ -12,7 +12,7 @@ export default function CourseCard({ course }: { course: Course }) {
       href={`/courses/${course.slug}`}
       className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
     >
-      <div className="h-44 bg-gradient-to-br from-indigo-500 to-purple-600 relative">
+      <div className="h-44 bg-gradient-to-br from-brand-500 to-brand-accent-600 relative">
         {course.thumbnailUrl ? (
           <Image
             src={course.thumbnailUrl}
@@ -30,7 +30,7 @@ export default function CourseCard({ course }: { course: Course }) {
       </div>
 
       <div className="p-5">
-        <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-1">
+        <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-1">
           {course.title}
         </h3>
         <p className="text-sm text-gray-500 mb-4 line-clamp-2">
@@ -42,7 +42,7 @@ export default function CourseCard({ course }: { course: Course }) {
             <Users className="w-3.5 h-3.5" />
             <span>{course.instructorName}</span>
           </div>
-          <span className="font-bold text-indigo-600">
+          <span className="font-bold text-brand-600">
             {course.price === 0
               ? "Gratis"
               : `$${course.price} ${course.currency}`}

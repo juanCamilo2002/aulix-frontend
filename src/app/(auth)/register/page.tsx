@@ -29,7 +29,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-indigo-600">Aulix</h1>
+          <h1 className="text-3xl font-bold text-brand-600">Aulix</h1>
           <p className="text-gray-500 mt-2">Crea tu cuenta gratis</p>
         </div>
 
@@ -77,7 +77,7 @@ export default function RegisterPage() {
             ¿Ya tienes cuenta?{" "}
             <Link
               href="/login"
-              className="text-indigo-600 font-medium hover:underline"
+              className="text-brand-600 font-medium hover:underline"
             >
               Inicia sesión
             </Link>

@@ -9,7 +9,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
       href={`/dashboard/courses/${enrollment.courseSlug}`}
       className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group"
     >
-      <div className="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 relative">
+      <div className="h-40 bg-gradient-to-br from-brand-500 to-brand-accent-600 relative">
         {enrollment.courseThumbnail ? (
           <Image
             src={enrollment.courseThumbnail}
@@ -25,7 +25,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
           </div>
         )}
         {enrollment.status === "COMPLETED" && (
-          <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+          <div className="absolute top-3 right-3 bg-success-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
             <Trophy className="w-3 h-3" />
             Completado
           </div>
@@ -33,7 +33,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
       </div>
 
       <div className="p-5">
-        <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">
+        <h3 className="font-semibold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-3">
           {enrollment.courseTitle}
         </h3>
 
@@ -46,7 +46,7 @@ export default function EnrollmentCard({ enrollment }: { enrollment: Enrollment 
           </div>
           <div className="w-full bg-gray-100 rounded-full h-2">
             <div
-              className="bg-indigo-600 h-2 rounded-full transition-all"
+              className="bg-brand-600 h-2 rounded-full transition-all"
               style={{ width: `${enrollment.progressPercent}%` }}
             />
           </div>

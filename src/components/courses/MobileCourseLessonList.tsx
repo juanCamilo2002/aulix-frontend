@@ -35,7 +35,7 @@ export default function MobileCourseLessonList({
       <div className="px-4 py-3">
         <Link
           href="/dashboard/my-courses"
-          className="text-xs text-indigo-600 hover:underline block mb-2"
+          className="text-xs text-brand-600 hover:underline block mb-2"
         >
           &lt;- Mis cursos
         </Link>
@@ -74,7 +74,7 @@ export default function MobileCourseLessonList({
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5">
             <div
-              className="bg-indigo-600 h-1.5 rounded-full transition-all"
+              className="bg-brand-600 h-1.5 rounded-full transition-all"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

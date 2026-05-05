@@ -97,6 +97,26 @@ Dentro de `components/` se separan responsabilidades por contexto:
 - Seguimiento de progreso por lección
 - Notificaciones toast para acciones principales
 
+## Colores Y Temas
+
+Los colores de marca están centralizados en `src/app/globals.css` como variables CSS y expuestos a Tailwind mediante `@theme inline`.
+
+Tokens principales:
+
+- `brand`: color primario de la plataforma.
+- `brand-accent`: color secundario para gradientes y acentos visuales.
+- `success`, `danger` y `warning`: colores semánticos para estados.
+
+Ejemplos de uso en componentes:
+
+```tsx
+className="bg-brand-600 text-white hover:bg-brand-700"
+className="bg-gradient-to-br from-brand-900 to-brand-accent-900"
+className="text-danger-600"
+```
+
+Para soportar temas o personalización por tenant, la idea es cambiar los valores de las variables `--brand-*` y `--brand-accent-*` sin reemplazar clases en los componentes.
+
 ## API Esperada
 
 El frontend consume endpoints relacionados con:

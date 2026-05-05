@@ -30,7 +30,7 @@ export default function MyCoursesPage() {
         </p>
         <Link
           href="/courses"
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="bg-brand-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
         >
           Ver catálogo
         </Link>

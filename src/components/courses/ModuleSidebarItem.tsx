@@ -60,19 +60,19 @@ export default function ModuleSidebarItem({
                 onClick={() => onSelectLesson(lesson.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                   isActive
-                    ? "bg-indigo-50 border-r-2 border-indigo-600"
+                    ? "bg-brand-50 border-r-2 border-brand-600"
                     : "hover:bg-gray-50"
                 }`}
               >
                 {lessonProgress?.completed ? (
-                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-success-500 flex-shrink-0" />
                 ) : (
                   <Circle className="w-4 h-4 text-gray-300 flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p
                     className={`text-xs truncate ${
-                      isActive ? "text-indigo-700 font-medium" : "text-gray-700"
+                      isActive ? "text-brand-700 font-medium" : "text-gray-700"
                     }`}
                   >
                     {lesson.title}

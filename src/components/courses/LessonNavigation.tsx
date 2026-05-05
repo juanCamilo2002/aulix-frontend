@@ -39,7 +39,7 @@ export default function LessonNavigation({
           {next.title} -&gt;
         </Button>
       ) : (
-        <div className="text-sm text-green-600 font-medium flex items-center gap-1">
+        <div className="text-sm text-success-600 font-medium flex items-center gap-1">
           <CheckCircle className="w-4 h-4" />
           Fin del curso
         </div>

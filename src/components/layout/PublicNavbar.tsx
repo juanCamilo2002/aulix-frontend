@@ -13,12 +13,12 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-indigo-600" />
-            <span className="text-xl font-bold text-indigo-600">Aulix</span>
+            <BookOpen className="w-6 h-6 text-brand-600" />
+            <span className="text-xl font-bold text-brand-600">Aulix</span>
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link href="/courses" className="text-sm text-gray-600 hover:text-indigo-600">
+            <Link href="/courses" className="text-sm text-gray-600 hover:text-brand-600">
               Cursos
             </Link>
             {isAuthenticated ? (

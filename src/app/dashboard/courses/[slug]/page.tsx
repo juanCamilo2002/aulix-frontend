@@ -63,7 +63,7 @@ export default function CoursePlayerPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function CoursePlayerPage() {
         <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
           <Link
             href="/dashboard/my-courses"
-            className="text-xs text-indigo-600 hover:underline block mb-2"
+            className="text-xs text-brand-600 hover:underline block mb-2"
           >
             &lt;- Mis cursos
           </Link>
@@ -92,7 +92,7 @@ export default function CoursePlayerPage() {
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5">
               <div
-                className="bg-indigo-600 h-1.5 rounded-full transition-all"
+                className="bg-brand-600 h-1.5 rounded-full transition-all"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -140,7 +140,7 @@ export default function CoursePlayerPage() {
                 />
               </div>
             ) : (
-              <div className="bg-gradient-to-br from-indigo-900 to-purple-900 aspect-video w-full flex items-center justify-center">
+              <div className="bg-gradient-to-br from-brand-900 to-brand-accent-900 aspect-video w-full flex items-center justify-center">
                 <FileText className="w-16 h-16 text-white opacity-50" />
               </div>
             )}
@@ -148,7 +148,7 @@ export default function CoursePlayerPage() {
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                 <div>
-                  <p className="text-sm text-indigo-600 font-medium mb-1">
+                  <p className="text-sm text-brand-600 font-medium mb-1">
                     {
                       course.modules?.find((module) =>
                         module.lessons.some((lesson) => lesson.id === activeLesson.id)

@@ -28,7 +28,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-indigo-600">Aulix</h1>
+          <h1 className="text-3xl font-bold text-brand-600">Aulix</h1>
           <p className="text-gray-500 mt-2">Inicia sesión en tu cuenta</p>
         </div>
 
@@ -65,7 +65,7 @@ export default function LoginPage() {
             ¿No tienes cuenta?{" "}
             <Link
               href="/register"
-              className="text-indigo-600 font-medium hover:underline"
+              className="text-brand-600 font-medium hover:underline"
             >
               Regístrate gratis
             </Link>
