@@ -11,7 +11,7 @@ import {
   UpdateLessonProgressRequest,
 } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 export function usePublishedCourses() {
@@ -98,67 +98,172 @@ export function useUpdateProgress() {
   const queryClient = useQueryClient();
 
   const pendingProgress = useRef<Map<string, UpdateLessonProgressRequest>>(new Map());
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flushPendingProgressRef = useRef<
+    ((options?: { keepalive?: boolean }) => Promise<void>) | null
+  >(null);
+  const isFlushing = useRef(false);
 
-  const flushPendingProgress = async () => {
+  const clearDebounceTimer = useCallback(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+      debounceTimer.current = null;
+    }
+  }, []);
+
+  const updateProgressCache = useCallback((progress: UpdateLessonProgressRequest) => {
+    const key = enrollmentKeys.progress(progress.courseId);
+    queryClient.setQueryData<LessonProgress[]>(key, (old) => {
+      const next = {
+        lessonId: progress.lessonId,
+        completed: progress.completed,
+        lastPosition: progress.lastPosition,
+      };
+
+      if (!old) return [next];
+      if (!old.some((item) => item.lessonId === progress.lessonId)) {
+        return [...old, next];
+      }
+
+      return old.map((item) =>
+        item.lessonId === progress.lessonId ? { ...item, ...next } : item
+      );
+    });
+  }, [queryClient]);
+
+  const sendProgress = useCallback(async (progress: UpdateLessonProgressRequest) => {
+    await api.put<ApiResponse<LessonProgress>>(
+      `/enrollments/courses/${progress.courseId}/lessons/${progress.lessonId}/progress`,
+      { completed: progress.completed, lastPosition: progress.lastPosition }
+    );
+  }, []);
+
+  const sendProgressWithKeepalive = useCallback((progress: UpdateLessonProgressRequest) => {
+    if (typeof navigator === "undefined" || typeof document === "undefined") {
+      return false;
+    }
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    const csrfToken = getCookie("csrfToken");
+    if (csrfToken) headers["X-CSRF-Token"] = csrfToken;
+
+    fetch(
+      `${api.defaults.baseURL}/enrollments/courses/${progress.courseId}/lessons/${progress.lessonId}/progress`,
+      {
+        method: "PUT",
+        credentials: "include",
+        keepalive: true,
+        headers,
+        body: JSON.stringify({
+          completed: progress.completed,
+          lastPosition: progress.lastPosition,
+        }),
+      }
+    ).catch(() => undefined);
+
+    return true;
+  }, []);
+
+  const scheduleFlush = useCallback(() => {
+    clearDebounceTimer();
+    debounceTimer.current = setTimeout(() => {
+      void flushPendingProgressRef.current?.();
+    }, 30000);
+  }, [clearDebounceTimer]);
+
+  const flushPendingProgress = useCallback(async (options?: { keepalive?: boolean }) => {
     if (pendingProgress.current.size === 0) return;
 
-    const batch = Array.from(pendingProgress.current.values());
-    pendingProgress.current.clear();
+    clearDebounceTimer();
+    const batch = Array.from(pendingProgress.current.entries());
 
-    for (const progress of batch) {
-      try {
-        await api.put<ApiResponse<LessonProgress>>(
-          `/enrollments/courses/${progress.courseId}/lessons/${progress.lessonId}/progress`,
-          { completed: progress.completed, lastPosition: progress.lastPosition }
-        );
-      } catch {
-        // Silent fail - progress will be retried on next save
-      }
+    if (options?.keepalive) {
+      batch.forEach(([, progress]) => sendProgressWithKeepalive(progress));
+      pendingProgress.current.clear();
+      return;
     }
-  };
 
-  const scheduleFlush = () => {
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(flushPendingProgress, 30000);
-  };
+    if (isFlushing.current) return;
 
-  return useMutation<
-    LessonProgress | undefined,
-    ApiAxiosError,
-    UpdateLessonProgressRequest
-  >({
-    mutationFn: async ({
-      courseId,
-      lessonId,
-      completed,
-      lastPosition,
-    }) => {
-      const key = `${courseId}-${lessonId}`;
-      const existing = pendingProgress.current.get(key);
+    isFlushing.current = true;
 
-      if (existing && Math.abs(existing.lastPosition - lastPosition) < 5) {
-        return undefined;
+    try {
+      for (const [key, progress] of batch) {
+        try {
+          await sendProgress(progress);
+
+          const latest = pendingProgress.current.get(key);
+          if (latest === progress) {
+            pendingProgress.current.delete(key);
+          }
+        } catch {
+          queryClient.invalidateQueries({ queryKey: enrollmentKeys.progress(progress.courseId) });
+        }
       }
+    } finally {
+      isFlushing.current = false;
+    }
 
-      pendingProgress.current.set(key, { courseId, lessonId, completed, lastPosition });
+    if (pendingProgress.current.size > 0) {
       scheduleFlush();
-
-      return undefined;
-    },
-    onMutate: (variables) => {
-      const key = enrollmentKeys.progress(variables.courseId);
-      queryClient.setQueryData<LessonProgress[]>(key, (old) => {
-        if (!old) return old;
-        return old.map(p =>
-          p.lessonId === variables.lessonId
-            ? { ...p, completed: variables.completed, lastPosition: variables.lastPosition }
-            : p
-        );
-      });
-    },
-    onError: (err, variables) => {
-      queryClient.invalidateQueries({ queryKey: enrollmentKeys.progress(variables.courseId) });
     }
-  });
+  }, [clearDebounceTimer, queryClient, scheduleFlush, sendProgress, sendProgressWithKeepalive]);
+
+  useEffect(() => {
+    flushPendingProgressRef.current = flushPendingProgress;
+  }, [flushPendingProgress]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        void flushPendingProgress();
+      }
+    };
+    const handlePageHide = () => {
+      void flushPendingProgress({ keepalive: true });
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+      void flushPendingProgress();
+      clearDebounceTimer();
+    };
+  }, [clearDebounceTimer, flushPendingProgress]);
+
+  const mutate = useCallback((progress: UpdateLessonProgressRequest) => {
+    const key = `${progress.courseId}-${progress.lessonId}`;
+    const existing = pendingProgress.current.get(key);
+
+    if (
+      existing &&
+      existing.completed === progress.completed &&
+      Math.abs(existing.lastPosition - progress.lastPosition) < 5
+    ) {
+      return;
+    }
+
+    pendingProgress.current.set(key, progress);
+    updateProgressCache(progress);
+    scheduleFlush();
+  }, [scheduleFlush, updateProgressCache]);
+
+  return {
+    mutate,
+    flushPendingProgress,
+  };
+}
+
+function getCookie(name: string) {
+  if (typeof document === "undefined") return null;
+
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1] ?? null;
 }

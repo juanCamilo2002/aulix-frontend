@@ -38,7 +38,7 @@ export default function CoursePlayerPage() {
   const activeCourseId = course?.id ?? "";
 
   const { data: progress } = useCourseProgress(activeCourseId);
-  const { mutate: updateProgress } = useUpdateProgress();
+  const { mutate: updateProgress, flushPendingProgress } = useUpdateProgress();
 
   const getLessonProgress = (lessonId: string): LessonProgress | undefined =>
     progress?.find((item) => item.lessonId === lessonId);
@@ -57,6 +57,7 @@ export default function CoursePlayerPage() {
       completed: !current?.completed,
       lastPosition: current?.lastPosition ?? 0,
     });
+    void flushPendingProgress();
   };
 
   const handleVideoProgress = (state: { playedSeconds: number }) => {
@@ -67,6 +68,23 @@ export default function CoursePlayerPage() {
       completed: getLessonProgress(activeLesson.id)?.completed ?? false,
       lastPosition: Math.floor(state.playedSeconds),
     });
+  };
+
+  const handleVideoEnded = () => {
+    if (!activeLesson || !activeCourseId) return;
+    updateProgress({
+      courseId: activeCourseId,
+      lessonId: activeLesson.id,
+      completed: true,
+      lastPosition: activeLesson.durationSecs,
+    });
+    void flushPendingProgress();
+  };
+
+  const handleSelectLesson = (lessonId: string) => {
+    if (lessonId === activeLesson?.id) return;
+    void flushPendingProgress();
+    setActiveLessonId(lessonId);
   };
 
   if (isLoading) {
@@ -115,7 +133,7 @@ export default function CoursePlayerPage() {
               module={module}
               activeLesson={activeLesson}
               getLessonProgress={getLessonProgress}
-              onSelectLesson={setActiveLessonId}
+              onSelectLesson={handleSelectLesson}
             />
           ))}
         </div>
@@ -129,7 +147,7 @@ export default function CoursePlayerPage() {
           totalLessons={totalLessons}
           progressPercent={progressPercent}
           getLessonProgress={getLessonProgress}
-          onSelectLesson={setActiveLessonId}
+          onSelectLesson={handleSelectLesson}
         />
 
         {activeLesson ? (
@@ -142,6 +160,7 @@ export default function CoursePlayerPage() {
                   height="100%"
                   controls
                   onProgress={handleVideoProgress}
+                  onEnded={handleVideoEnded}
                   progressInterval={10000}
                   config={{
                     youtube: { playerVars: { showinfo: 1 } },
@@ -191,7 +210,7 @@ export default function CoursePlayerPage() {
               <LessonNavigation
                 course={course}
                 activeLesson={activeLesson}
-                onNavigate={(lesson) => setActiveLessonId(lesson.id)}
+                onNavigate={(lesson) => handleSelectLesson(lesson.id)}
               />
             </div>
           </div>
