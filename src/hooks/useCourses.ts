@@ -36,6 +36,17 @@ export function useCourse(slug: string) {
   });
 }
 
+export function useCourseContent(slug: string) {
+  return useQuery<Course, ApiAxiosError>({
+    queryKey: [...courseKeys.detail(slug), "content"],
+    queryFn: async () => {
+      const res = await api.get<ApiResponse<Course>>(`/courses/${slug}/content`);
+      return unwrapApiData(res.data);
+    },
+    enabled: !!slug,
+  });
+}
+
 export function useMyEnrollments(options?: { enabled?: boolean }) {
   return useQuery<Enrollment[], ApiAxiosError>({
     queryKey: enrollmentKeys.myCourses(),

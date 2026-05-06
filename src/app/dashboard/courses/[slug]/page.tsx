@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import LessonNavigation from "@/components/courses/LessonNavigation";
 import MobileCourseLessonList from "@/components/courses/MobileCourseLessonList";
 import ModuleSidebarItem from "@/components/courses/ModuleSidebarItem";
-import { useCourse, useCourseProgress, useUpdateProgress } from "@/hooks/useCourses";
+import { useCourseContent, useCourseProgress, useUpdateProgress } from "@/hooks/useCourses";
 import { Lesson, LessonProgress } from "@/types";
 import {
   BookOpen,
@@ -27,7 +27,7 @@ const ReactPlayer = dynamic(() => import("react-player"), {
 
 export default function CoursePlayerPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { data: course, isLoading } = useCourse(slug);
+  const { data: course, isLoading } = useCourseContent(slug);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
 
   const allLessons = course?.modules?.flatMap((module) => module.lessons) ?? [];
