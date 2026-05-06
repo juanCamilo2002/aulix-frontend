@@ -55,6 +55,7 @@ async function hasValidSession(request: NextRequest) {
 function clearAuthCookies(response: NextResponse) {
     response.cookies.delete("accessToken");
     response.cookies.delete("refreshToken");
+    response.cookies.delete("csrfToken");
 }
 
 export const config = {

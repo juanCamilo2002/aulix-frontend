@@ -2,10 +2,6 @@
 
 import { create } from "zustand";
 import { ApiResponse, User } from "@/types";
-import {
-  clearTokens,
-  saveUser,
-} from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
@@ -24,12 +20,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   isInitializing: true,
 
   login: (user) => {
-    saveUser(user);
     set({ user, isAuthenticated: true });
   },
 
   logout: () => {
-    clearTokens();
     set({ user: null, isAuthenticated: false });
   },
 
@@ -49,10 +43,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         throw new Error("Session response missing user");
       }
 
-      saveUser(body.data);
       set({ user: body.data, isAuthenticated: true, isInitializing: false });
     } catch {
-      clearTokens();
       set({ user: null, isAuthenticated: false, isInitializing: false });
     }
   }

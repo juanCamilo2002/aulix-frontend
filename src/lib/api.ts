@@ -1,5 +1,4 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { clearTokens } from "@/lib/auth";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api",
@@ -12,12 +11,17 @@ const api = axios.create({
 type RetriableRequest = AxiosRequestConfig & { _retry?: boolean };
 const MUTATING_METHODS = new Set(["post", "put", "patch", "delete"]);
 const AUTH_ENDPOINTS = ["/auth/login", "/auth/register", "/auth/refresh"];
+const CSRF_EXEMPT_ENDPOINTS = ["/auth/login", "/auth/register"];
 
 api.interceptors.request.use((config) => {
   const method = config.method?.toLowerCase();
   const csrfToken = getCookie("csrfToken");
+  const requestUrl = config.url ?? "";
+  const isCsrfExempt = CSRF_EXEMPT_ENDPOINTS.some((endpoint) =>
+    requestUrl.includes(endpoint)
+  );
 
-  if (method && MUTATING_METHODS.has(method) && csrfToken) {
+  if (method && MUTATING_METHODS.has(method) && csrfToken && !isCsrfExempt) {
     config.headers.set("X-CSRF-Token", csrfToken);
   }
 
@@ -45,15 +49,11 @@ api.interceptors.response.use(
         await api.post("/auth/refresh");
         return api(originalRequest);
       } catch {
-        clearTokens();
-
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
       }
     } else if (error.response?.status === 401 && !isAuthEndpoint) {
-      clearTokens();
-
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
